@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bento Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.0/css/all.min.css">
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</head>
+<body>
+    <!-- 顶栏容器 -->
+    <div class="header-container">
+        <div class="header-logo">
+            <a href="#" class="logo">
+                <span class="logo-text">IMKOH</span>
+            </a>
+        </div>
+        <nav class="header-nav">
+            <a href="#" class="header-nav-item">主页</a>
+            <a href="#" class="header-nav-item">博客</a>
+            <a href="#" class="header-nav-item">友链</a>
+            <a href="#" class="header-nav-item">关于</a>
+        </nav>
+        <div class="header-right">
+            <div class="header-icons">
+                <button class="header-icon-btn" id="search-btn"><i class="fas fa-magnifying-glass"></i></button>
+                <button class="header-icon-btn" id="theme-toggle"><i class="fas fa-circle-half-stroke"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主容器 -->
+    <div class="container">
+        <!-- 左侧主视图 -->
+        <main class="main-content">
+            <div class="bento-grid">
+                <!-- 专题导航卡片 -->
+                <div class="card card-large card-nav">
+                    <div class="nav-tabs">
+                        <a href="#" class="nav-tab active">全部文章</a>
+                        <a href="#" class="nav-tab">好物分享</a>
+                        <a href="#" class="nav-tab">学习笔记</a>
+                        <a href="#" class="nav-tab">工具推荐</a>
+                        <a href="#" class="nav-tab">生活记录</a>
+                        <a href="#" class="nav-tab">技术教程</a>
+                        <a href="#" class="nav-tab">读书心得</a>
+                        <a href="#" class="nav-tab">旅行游记</a>
+                        <a href="#" class="nav-tab">书影音评</a>
+                        <a href="#" class="nav-tab">摄影作品</a>
+                        <a href="#" class="nav-tab" style="display: none;">设计灵感</a>
+                        <a href="#" class="nav-tab" style="display: none;">随笔感悟</a>
+                        <a href="#" class="nav-tab" style="display: none;">健身日记</a>
+                        <a href="#" class="nav-tab" style="display: none;">投资理财</a>
+                        <a href="#" class="nav-tab" style="display: none;">数码评测</a>
+                        <a href="#" class="nav-tab" style="display: none;">影视推荐</a>
+                        <a href="#" class="nav-tab" style="display: none;">音乐分享</a>
+                        <a href="#" class="nav-tab" style="display: none;">游戏体验</a>
+                        <a href="#" class="nav-tab" style="display: none;">职场感悟</a>
+                        <a href="#" class="nav-tab" style="display: none;">育儿心得</a>
+                        <button class="nav-pagination nav-next" id="nav-next" style="display: none;">
+                            <i class="fas fa-angle-double-right"></i>
+                        </button>
+                        <button class="nav-pagination nav-prev" id="nav-prev" style="display: none;">
+                            <i class="fas fa-angle-double-left"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 文章卡片 -->
+                <div class="card card-medium">
+                    <div class="card-header">
+                        <h3>如何搭建个人博客网站</h3>
+                    </div>
+                    <div class="card-content">
+                        <p class="small-text">详细介绍从零开始搭建个人博客的完整流程，包括域名选择、服务器配置、主题定制等关键步骤。涵盖 GitHub Pages、Vercel 等免费托管平台的使用方法...</p>
+                        <div class="article-meta">
+                            <span>2025-12-20</span>
+                            <span class="article-meta-separator">•</span>
+                            <span>技术教程</span>
+                            <span class="article-tag"><i class="fas fa-hashtag"></i> 科技</span>
+                            <span class="article-tag"><i class="fas fa-hashtag"></i> 编程</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card card-medium">
+                    <div class="card-header">
+                        <h3>2024 年度读书总结</h3>
+                    </div>
+                    <div class="card-content">
+                        <p class="small-text">回顾这一年读过的好书，分享一些印象深刻的观点和感悟。从技术类的《Clean Code》到人文社科的经典作品，推荐几本值得一读的作品...</p>
+                        <div class="article-meta">
+                            <span>2025-12-18</span>
+                            <span class="article-meta-separator">•</span>
+                            <span>读书心得</span>
+                            <span class="article-tag"><i class="fas fa-hashtag"></i> 读书</span>
+                            <span class="article-tag"><i class="fas fa-hashtag"></i> 文化</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card card-medium">
+                    <div class="card-header">
+                        <h3>JavaScript 异步编程最佳实践</h3>
+                    </div>
+                    <div class="card-content">
+                        <p class="small-text">深入探讨 Promise、async/await 的使用技巧，以及如何优雅地处理异步操作中的错误。结合 ES2022 的新特性，提升代码质量和可维护性...</p>
+                        <div class="article-meta">
+                            <span>2025-12-15</span>
+                            <span class="article-meta-separator">•</span>
+                            <span>技术教程</span>
+                            <span class="article-tag"><i class="fas fa-hashtag"></i> 科技</span>
+                            <span class="article-tag"><i class="fas fa-hashtag"></i> 编程</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card card-medium">
+                    <div class="card-header">
+                        <h3>我的摄影器材推荐清单</h3>
+                    </div>
+                    <div class="card-content">
+                        <p class="small-text">分享一些性价比很高的摄影设备，从入门的 Canon EOS R50 到专业的 Sony α7R V，帮助摄影爱好者选择合适的器材。包含镜头、三脚架等配件推荐...</p>
+                        <div class="article-meta">
+                            <span>2025-12-12</span>
+                            <span class="article-meta-separator">•</span>
+                            <span>好物分享</span>
+                            <span class="article-tag"><i class="fas fa-hashtag"></i> 科技</span>
+                            <span class="article-tag"><i class="fas fa-hashtag"></i> 生活</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card card-medium">
+                    <div class="card-header">
+                        <h3>京都三日游攻略</h3>
+                    </div>
+                    <div class="card-content">
+                        <p class="small-text">详细的京都旅行路线规划，包括必去景点、美食推荐、住宿建议。从清水寺到金阁寺，从 Airbnb 民宿到传统旅馆，让你的京都之行更加完美...</p>
+                        <div class="article-meta">
+                            <span>2025-12-10</span>
+                            <span class="article-meta-separator">•</span>
+                            <span>旅行游记</span>
+                            <span class="article-tag"><i class="fas fa-hashtag"></i> 旅行</span>
+                            <span class="article-tag"><i class="fas fa-hashtag"></i> 生活</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card card-medium">
+                    <div class="card-header">
+                        <h3>高效工作的时间管理方法</h3>
+                    </div>
+                    <div class="card-content">
+                        <p class="small-text">介绍几种实用的时间管理技巧，包括 GTD（Getting Things Done）方法、番茄工作法等。帮助提高工作效率，实现 Work-Life Balance...</p>
+                        <div class="article-meta">
+                            <span>2025-12-08</span>
+                            <span class="article-meta-separator">•</span>
+                            <span>学习笔记</span>
+                            <span class="article-tag"><i class="fas fa-hashtag"></i> 教育</span>
+                            <span class="article-tag"><i class="fas fa-hashtag"></i> 生活</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+
+        <!-- 右侧侧边栏 -->
+        <aside class="sidebar">
+            <div class="sidebar-grid">
+                <!-- 个人信息卡片 -->
+                <div class="card card-sidebar card-profile">
+                    <div class="profile-header">
+                        <img src="https://s3.bmp.ovh/imgs/2025/12/24/09fbf162516cb3c2.png" alt="Gavin Koh" class="profile-avatar">
+                    </div>
+                    <div class="profile-content">
+                        <h3 class="profile-name">Gavin Koh</h3>
+                        <p class="profile-bio">Live simply, work seriously.</p>
+                        <div class="profile-socials">
+                            <a href="https://github.com/gavin-koh" class="social-btn" title="GitHub">
+                                <i class="fab fa-github"></i>
+                            </a>
+                            <a href="https://www.zcool.com.cn/u/28889520" class="social-btn" title="站酷">
+                                <svg class="social-icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"><path d="M634.96 87.35c1.28-6.2 10.78-7.46 13.14-1.42 26.1 63.47 23.15 137.73-6.49 199.5 110.8-16.25 215.09-72.25 290.45-155.01 2.58-3.54 7.94-5.2 11.31-1.71 3.83 4.69 1.88 11.29 2.59 16.85 3.46 117.87-34.88 236.15-106.18 329.99 38.06-4.1 75.61-12.7 111.71-25.42 5.17-2.53 11.23 2.87 9.51 8.27-28.97 90.22-101.06 165.26-189.97 198-2.89 1.05-6.74 1.88-6.44 5.79-20.41 100.98-88.03 190.83-178.91 239.16-80.35 43.72-177.96 53.75-265.71 28.25-75.55-21.6-143.16-69.45-188.96-133.26-71.5-97.75-87.9-234.13-37.83-344.88 30.45-67.95 86.52-122.08 151.3-157.55 53.78-29.76 113.33-48.14 173.83-58.12 45.89-7.6 91.3-21.96 130.77-47.02 38.13-23.91 69.31-59.38 85.88-101.42m-76.1 486.94c-72.09 34.96-147.18 67.74-227.64 76.4-3.21-0.16-7.78 1.9-5.63 5.71 12.06 17.06 30.11 29.37 49.46 36.81 26.54 9.86 56.11 9.22 83.11 1.58 28.67-8.68 52.43-28.81 70.68-52.03 15.51-20.38 28.7-42.81 37.2-67.02-1.52-2.72-4.69-3.14-7.18-1.45M104.9 596.93c-3.33 0.67-2.33 4.66-1.56 6.93 6.97 21.75 16.52 43.34 32.13 60.34 11.11 12.41 27.71 20.4 44.54 18.86 16.33-1.52 29.54-14.77 34.73-29.75 0.94-3.42-3.06-4.34-5.57-4.51-37.01-4.12-69.29-25.26-97.39-48.39-2.14-1.33-4.06-4.41-6.88-3.48z" fill="currentColor"></path></svg>
+                            </a>
+                            <a href="https://qm.qq.com/q/Aw5svOymrK" class="social-btn" title="QQ">
+                                <i class="fab fa-qq"></i>
+                            </a>
+                            <a href="mailto:gavin-koh@outlook.com" class="social-btn" title="Email">
+                                <i class="fas fa-envelope"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 标签卡片 -->
+                <div class="card card-sidebar">
+                    <div class="card-header">
+                        <h3><i class="fas fa-tag"></i> 标签</h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="tag-cloud">
+                            <span class="tag-item">科技<sup>0</sup></span>
+                            <span class="tag-item">文化<sup>0</sup></span>
+                            <span class="tag-item">教育<sup>0</sup></span>
+                            <span class="tag-item">娱乐<sup>0</sup></span>
+                            <span class="tag-item">生活<sup>0</sup></span>
+                            <span class="tag-item">健康<sup>0</sup></span>
+                            <span class="tag-item">商业<sup>0</sup></span>
+                            <span class="tag-item">艺术<sup>0</sup></span>
+                            <span class="tag-item">旅行<sup>0</sup></span>
+                            <span class="tag-item">设计<sup>0</sup></span>
+                            <span class="tag-item">音乐<sup>0</sup></span>
+                            <span class="tag-item">编程<sup>0</sup></span>
+                            <span class="tag-item">摄影<sup>0</sup></span>
+                            <span class="tag-item">读书<sup>0</sup></span>
+                            <span class="tag-item">运动<sup>0</sup></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 网站信息卡片 -->
+                <div class="card card-sidebar">
+                    <div class="card-header">
+                        <h3><i class="fas fa-circle-info"></i> 站点统计</h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="site-info-item">
+                            <span class="info-label">建站天数</span>
+                            <span class="info-value" id="site-days">0 天</span>
+                        </div>
+                        <div class="site-info-item">
+                            <span class="info-label">文章总数</span>
+                            <span class="info-value">0 篇</span>
+                        </div>
+                        <div class="site-info-item">
+                            <span class="info-label">总访问量</span>
+                            <span class="info-value" id="busuanzi_value_site_pv">0</span>
+                        </div>
+                        <div class="site-info-item">
+                            <span class="info-label">总访客数</span>
+                            <span class="info-value" id="busuanzi_value_site_uv">0</span>
+                        </div>
+                        <div class="site-info-item">
+                            <span class="info-label">最后更新</span>
+                            <span class="info-value">刚刚</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2025 By Gavin Koh. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- 浮动按钮 -->
+    <div class="float-buttons">
+        <button class="float-btn scroll-to-top" id="scroll-to-top">
+            <span class="scroll-percent">0%</span>
+            <i class="fas fa-arrow-up"></i>
+        </button>
+        <button class="float-btn scroll-to-bottom" id="scroll-to-bottom">
+            <i class="fas fa-arrow-down"></i>
+        </button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
