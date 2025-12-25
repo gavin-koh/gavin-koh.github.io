@@ -10,36 +10,139 @@ document.addEventListener('DOMContentLoaded', function() {
     const allTabs = Array.from(navTabsContainer.querySelectorAll('.nav-tab'));
     const nextBtn = document.getElementById('nav-next');
     const prevBtn = document.getElementById('nav-prev');
+    const logoLink = document.querySelector('.logo');
+    const blogLink = document.querySelector('.header-nav-item');
     
     let isAnimating = false;
     
-    // 隐藏分页按钮
-    nextBtn.style.display = 'none';
-    prevBtn.style.display = 'none';
+    // 返回首页的函数
+    function goHome() {
+        // 显示所有文章
+        const articleCards = document.querySelectorAll('.card-medium');
+        articleCards.forEach(card => {
+            card.style.display = 'flex';
+        });
+        
+        // 移除所有占位符
+        const placeholders = document.querySelectorAll('.placeholder-card');
+        placeholders.forEach(p => p.remove());
+        
+        // 重置导航栏到"全部文章"
+        const currentTabs = navTabsContainer.querySelectorAll('.nav-tab');
+        currentTabs.forEach(tab => tab.classList.remove('active'));
+        const allArticlesTab = Array.from(currentTabs).find(tab => tab.textContent.trim() === '全部文章');
+        if (allArticlesTab) {
+            allArticlesTab.classList.add('active');
+            allArticlesTab.blur();
+        }
+        
+        // 滚动到顶部
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    }
+    
+    // 标题点击返回首页
+    logoLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        goHome();
+    });
+    
+    // 博客按钮点击返回首页
+    blogLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        goHome();
+    });
+    
+    // 检查是否需要显示分页按钮
+    function checkPagination() {
+        const scrollWidth = navTabsContainer.scrollWidth;
+        const clientWidth = navTabsContainer.clientWidth;
+        
+        // 仅在手机端显示
+        if (scrollWidth > clientWidth && window.innerWidth <= 768) {
+            // 有溢出，可以滚动
+        } else {
+            // 没有溢出或不是手机端
+        }
+    }
+    
+    // 修改nav-tabs的overflow为auto以支持滚动
+    navTabsContainer.style.overflowX = 'auto';
+    navTabsContainer.style.overflowY = 'hidden';
+    navTabsContainer.style.scrollBehavior = 'smooth';
+    
+    // 隐藏滚动条
+    navTabsContainer.style.scrollbarWidth = 'none';
+    navTabsContainer.style.msOverflowStyle = 'none';
+    
+    // 添加滚动事件监听器，实时检查按钮状态
+    navTabsContainer.addEventListener('scroll', checkPagination);
+    
+    // 初始检查
+    setTimeout(checkPagination, 100);
     
     // 显示所有标签
     allTabs.forEach(tab => tab.style.display = 'flex');
     
+    // 保存原始顺序并按汉字排序（"全部文章"始终在第一个）
+    const firstTab = allTabs.find(tab => tab.textContent.trim() === '全部文章');
+    const otherTabs = allTabs.filter(tab => tab.textContent.trim() !== '全部文章')
+        .sort((a, b) => a.textContent.localeCompare(b.textContent, 'zh-CN'));
+    
+    const originalOrder = firstTab ? [firstTab, ...otherTabs] : allTabs;
+    let selectedTab = null;
+    
     // 使用事件委托处理标签点击（移动到第二位的逻辑）
     function handleTabMovement(clickedTab) {
-        // 如果点击的不是"全部文章"，将其移动到第二个位置
-        if (clickedTab.textContent.trim() !== '全部文章') {
-            const currentTabs = Array.from(navTabsContainer.querySelectorAll('.nav-tab'));
-            const firstTab = currentTabs[0]; // "全部文章"
-            const clickedIndex = currentTabs.indexOf(clickedTab);
+        isAnimating = true;
+        
+        const firstTab = originalOrder[0]; // "全部文章"
+        
+        if (clickedTab.textContent.trim() === '全部文章') {
+            // 点击"全部文章"时，恢复原始顺序
+            selectedTab = null;
             
-            // 只有当被点击的标签不在第二个位置时才移动
-            if (clickedIndex !== 1) {
-                isAnimating = true;
-                
-                // 将被点击的标签移动到第二个位置
-                navTabsContainer.insertBefore(clickedTab, firstTab.nextSibling);
-                
-                setTimeout(() => {
-                    isAnimating = false;
-                }, 200);
-            }
+            // 清空容器中的标签
+            allTabs.forEach(tab => tab.remove());
+            
+            // 重新添加所有标签到容器，按原始顺序
+            originalOrder.forEach((tab) => {
+                navTabsContainer.appendChild(tab);
+            });
+        } else {
+            // 点击其他标签时，将其移动到第二个位置
+            selectedTab = clickedTab;
+            
+            // 重新排列：第一个是"全部文章"，第二个是被点击的标签，其他按原始顺序
+            const newOrder = [firstTab, clickedTab];
+            
+            // 添加其他标签（按原始顺序，排除"全部文章"和被点击的标签）
+            originalOrder.forEach(tab => {
+                if (tab !== firstTab && tab !== clickedTab) {
+                    newOrder.push(tab);
+                }
+            });
+            
+            // 清空容器中的标签
+            allTabs.forEach(tab => tab.remove());
+            
+            // 重新添加标签到容器
+            newOrder.forEach((tab) => {
+                navTabsContainer.appendChild(tab);
+            });
         }
+        
+        // 立即滚动到开始位置（不延迟）
+        navTabsContainer.style.scrollBehavior = 'auto';
+        navTabsContainer.scrollLeft = 0;
+        navTabsContainer.style.scrollBehavior = 'smooth';
+        
+        setTimeout(() => {
+            isAnimating = false;
+            checkPagination();
+        }, 0);
     }
     
     // 自动统计文章和标签
@@ -74,14 +177,53 @@ document.addEventListener('DOMContentLoaded', function() {
         
         console.log('标签统计:', tagCounts); // 调试信息
         
-        // 更新标签云中的计数
+        // 将标签转换为数组并排序：先按数量降序，再按名称升序
+        const sortedTags = Object.entries(tagCounts)
+            .sort((a, b) => {
+                // 先按数量降序排列
+                if (b[1] !== a[1]) {
+                    return b[1] - a[1];
+                }
+                // 数量相同时按汉字排序（升序）
+                return a[0].localeCompare(b[0], 'zh-CN');
+            });
+        
+        // 更新标签云中的计数和顺序
         const tagItems = document.querySelectorAll('.tag-item');
-        tagItems.forEach(tagItem => {
+        const tagItemsArray = Array.from(tagItems);
+        
+        // 创建一个映射，用于快速查找标签元素
+        const tagElementMap = {};
+        tagItemsArray.forEach(tagItem => {
             const tagText = tagItem.textContent.replace(/\d+$/, '').trim();
-            const count = tagCounts[tagText] || 0;
-            const supElement = tagItem.querySelector('sup');
-            if (supElement) {
-                supElement.textContent = count;
+            tagElementMap[tagText] = tagItem;
+        });
+        
+        // 按排序后的顺序重新排列标签元素
+        const tagCloud = document.querySelector('.tag-cloud');
+        sortedTags.forEach(([tagName, count]) => {
+            const tagElement = tagElementMap[tagName];
+            if (tagElement) {
+                // 更新计数
+                const supElement = tagElement.querySelector('sup');
+                if (supElement) {
+                    supElement.textContent = count;
+                }
+                // 只显示有文章的标签（数量 > 0）
+                if (count > 0) {
+                    tagCloud.appendChild(tagElement);
+                    tagElement.style.display = 'inline-block';
+                } else {
+                    tagElement.style.display = 'none';
+                }
+            }
+        });
+        
+        // 隐藏所有没有在sortedTags中的标签（数量为0的标签）
+        tagItemsArray.forEach(tagItem => {
+            const tagText = tagItem.textContent.replace(/\d+$/, '').trim();
+            if (!tagCounts[tagText] || tagCounts[tagText] === 0) {
+                tagItem.style.display = 'none';
             }
         });
     }
@@ -98,11 +240,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 const clickedTab = e.target;
                 const selectedCategory = clickedTab.textContent.trim();
                 
-                // 移除所有活跃状态
-                allTabs.forEach(t => t.classList.remove('active'));
+                // 移除所有活跃状态（动态查询）
+                const currentTabs = navTabsContainer.querySelectorAll('.nav-tab');
+                currentTabs.forEach(t => t.classList.remove('active'));
                 
                 // 添加当前点击的活跃状态
                 clickedTab.classList.add('active');
+                
+                // 在移动设备上，点击后立即移除焦点和 active 类
+                if (window.innerWidth <= 768) {
+                    clickedTab.blur();
+                    setTimeout(() => {
+                        clickedTab.classList.remove('active');
+                    }, 100);
+                }
                 
                 // 处理标签移动
                 handleTabMovement(clickedTab);
@@ -121,8 +272,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 filterArticlesByTag(tagName);
                 
                 // 重置主视图导航栏到"全部文章"
-                allTabs.forEach(tab => tab.classList.remove('active'));
-                const allArticlesTab = allTabs.find(tab => tab.textContent.trim() === '全部文章');
+                const currentTabs = navTabsContainer.querySelectorAll('.nav-tab');
+                currentTabs.forEach(tab => tab.classList.remove('active'));
+                const allArticlesTab = Array.from(currentTabs).find(tab => tab.textContent.trim() === '全部文章');
                 if (allArticlesTab) {
                     allArticlesTab.classList.add('active');
                 }
@@ -145,8 +297,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 filterArticlesByTag(tagName);
                 
                 // 重置主视图导航栏到"全部文章"
-                allTabs.forEach(tab => tab.classList.remove('active'));
-                const allArticlesTab = allTabs.find(tab => tab.textContent.trim() === '全部文章');
+                const currentTabs = navTabsContainer.querySelectorAll('.nav-tab');
+                currentTabs.forEach(tab => tab.classList.remove('active'));
+                const allArticlesTab = Array.from(currentTabs).find(tab => tab.textContent.trim() === '全部文章');
                 if (allArticlesTab) {
                     allArticlesTab.classList.add('active');
                 }
@@ -156,11 +309,13 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function filterArticlesByCategory(category) {
         const articleCards = document.querySelectorAll('.card-medium');
+        let visibleCount = 0;
         
         if (category === '全部文章') {
             // 显示所有文章
             articleCards.forEach(card => {
                 card.style.display = 'flex';
+                visibleCount++;
             });
         } else {
             // 根据分类筛选文章
@@ -172,6 +327,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     console.log('文章分类:', articleCategory, '筛选分类:', category); // 调试信息
                     if (articleCategory === category) {
                         card.style.display = 'flex';
+                        visibleCount++;
                     } else {
                         card.style.display = 'none';
                     }
@@ -180,11 +336,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         }
+        
+        // 添加占位符以撑满网格
+        addPlaceholders(visibleCount);
     }
     
     function filterArticlesByTag(tagName) {
         const articleCards = document.querySelectorAll('.card-medium');
         console.log('筛选标签:', tagName); // 调试信息
+        
+        let visibleCount = 0;
         
         // 直接根据文章中的标签进行筛选
         articleCards.forEach(card => {
@@ -200,10 +361,35 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (hasTag) {
                 card.style.display = 'flex';
+                visibleCount++;
             } else {
                 card.style.display = 'none';
             }
         });
+        
+        // 添加占位符以撑满网格
+        addPlaceholders(visibleCount);
+    }
+    
+    // 添加占位符卡片以撑满网格
+    function addPlaceholders(visibleCount) {
+        const bentoGrid = document.querySelector('.bento-grid');
+        
+        // 移除之前的占位符
+        const existingPlaceholders = bentoGrid.querySelectorAll('.placeholder-card');
+        existingPlaceholders.forEach(placeholder => placeholder.remove());
+        
+        // 如果可见文章数少于2个，添加占位符
+        if (visibleCount < 2) {
+            const placeholderCount = 2 - visibleCount;
+            for (let i = 0; i < placeholderCount; i++) {
+                const placeholder = document.createElement('div');
+                placeholder.className = 'card card-medium placeholder-card';
+                placeholder.style.visibility = 'hidden';
+                placeholder.style.pointerEvents = 'none';
+                bentoGrid.appendChild(placeholder);
+            }
+        }
     }
     
     // 网站建站日期
@@ -235,11 +421,11 @@ document.addEventListener('DOMContentLoaded', function() {
         if (minutes < 1) {
             timeText = '刚刚';
         } else if (minutes < 60) {
-            timeText = `${minutes}分钟前`;
+            timeText = `${minutes} 分钟前`;
         } else if (hours < 24) {
-            timeText = `${hours}小时前`;
+            timeText = `${hours} 小时前`;
         } else if (days < 30) {
-            timeText = `${days}天前`;
+            timeText = `${days} 天前`;
         } else {
             // 超过30天显示具体日期
             timeText = deployTime.toLocaleDateString('zh-CN', {
@@ -263,6 +449,10 @@ document.addEventListener('DOMContentLoaded', function() {
     updateSiteDays();
     updateStatistics();
     setupCategoryFilter();
+    
+    // 初始化占位符（所有文章都显示，所以visibleCount等于总文章数）
+    const initialArticleCount = document.querySelectorAll('.card-medium').length;
+    addPlaceholders(initialArticleCount);
     
     // 每分钟更新一次时间显示
     setInterval(updateLastUpdate, 60000);
@@ -289,6 +479,9 @@ themeToggleBtn.addEventListener('click', function() {
     } else {
         localStorage.setItem('theme', 'light');
     }
+    
+    // 移除焦点，防止按钮常亮
+    this.blur();
 });
 
 // 加载保存的主题
@@ -296,6 +489,8 @@ const savedTheme = localStorage.getItem('theme') || 'light';
 if (savedTheme === 'dark') {
     document.documentElement.classList.add('dark-mode');
 }
+
+
 
 window.addEventListener('scroll', function() {
     const scrollTop = window.scrollY;

@@ -17,7 +17,6 @@
             </a>
         </div>
         <nav class="header-nav">
-            <a href="#" class="header-nav-item">主页</a>
             <a href="#" class="header-nav-item">博客</a>
             <a href="#" class="header-nav-item">友链</a>
             <a href="#" class="header-nav-item">关于</a>
@@ -26,6 +25,7 @@
             <div class="header-icons">
                 <button class="header-icon-btn" id="search-btn"><i class="fas fa-magnifying-glass"></i></button>
                 <button class="header-icon-btn" id="theme-toggle"><i class="fas fa-circle-half-stroke"></i></button>
+                <button class="header-icon-btn" id="menu-btn"><i class="fas fa-list"></i></button>
             </div>
         </div>
     </div>
@@ -41,20 +41,11 @@
                         <a href="#" class="nav-tab active">全部文章</a>
                         <a href="#" class="nav-tab">好物分享</a>
                         <a href="#" class="nav-tab">学习笔记</a>
-                        <a href="#" class="nav-tab">工具推荐</a>
-                        <a href="#" class="nav-tab">生活记录</a>
                         <a href="#" class="nav-tab">技术教程</a>
                         <a href="#" class="nav-tab">读书心得</a>
                         <a href="#" class="nav-tab">旅行游记</a>
-                        <a href="#" class="nav-tab">书影音评</a>
-                        <a href="#" class="nav-tab">游戏评测</a>
-                        <button class="nav-pagination nav-next" id="nav-next" style="display: none;">
-                            <i class="fas fa-angle-double-right"></i>
-                        </button>
-                        <button class="nav-pagination nav-prev" id="nav-prev" style="display: none;">
-                            <i class="fas fa-angle-double-left"></i>
-                        </button>
                     </div>
+                    <div class="nav-scroll-indicator" id="nav-scroll-indicator"></div>
                 </div>
 
                 <!-- 文章卡片 -->
@@ -253,7 +244,7 @@
     <!-- 浮动按钮 -->
     <div class="float-buttons">
         <button class="float-btn scroll-to-top" id="scroll-to-top">
-            <span class="scroll-percent">0%</span>
+            <span class="scroll-percent">0</span>
             <i class="fas fa-arrow-up"></i>
         </button>
         <button class="float-btn scroll-to-bottom" id="scroll-to-bottom">
