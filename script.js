@@ -7,12 +7,12 @@ headerNav.classList.remove('visible');
 // 从 markdown 文件解析文章
 async function loadArticles() {
     const articleFiles = [
-        'sample/how-to-build-personal-blog/1.md',
-        'sample/2024-reading-summary/2.md',
-        'sample/javascript-async-best-practices/3.md',
-        'sample/photography-gear-recommendations/4.md',
-        'sample/kyoto-three-day-trip/5.md',
-        'sample/time-management-methods/6.md'
+        'sample/1.md',
+        'sample/2.md',
+        'sample/3.md',
+        'sample/4.md',
+        'sample/5.md',
+        'sample/6.md'
     ];
     
     const articles = [];
