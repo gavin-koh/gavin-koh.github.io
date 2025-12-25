@@ -7,45 +7,63 @@ headerNav.classList.remove('visible');
 // 从 markdown 文件解析文章
 async function loadArticles() {
     const articleFiles = [
-        './articles/sample/how-to-build-personal-blog/1.md',
-        './articles/sample/2024-reading-summary/2.md',
-        './articles/sample/javascript-async-best-practices/3.md',
-        './articles/sample/photography-gear-recommendations/4.md',
-        './articles/sample/kyoto-three-day-trip/5.md',
-        './articles/sample/time-management-methods/6.md'
+        'sample/how-to-build-personal-blog/1.md',
+        'sample/2024-reading-summary/2.md',
+        'sample/javascript-async-best-practices/3.md',
+        'sample/photography-gear-recommendations/4.md',
+        'sample/kyoto-three-day-trip/5.md',
+        'sample/time-management-methods/6.md'
     ];
     
     const articles = [];
     
     for (const file of articleFiles) {
         try {
+            console.log(`Fetching: ${file}`);
             const response = await fetch(file);
             if (!response.ok) {
                 console.error(`Failed to fetch ${file}: ${response.status}`);
                 continue;
             }
             const content = await response.text();
+            console.log(`Loaded ${file}, content length: ${content.length}`);
             const article = parseMarkdown(content);
             if (article) {
                 articles.push(article);
+                console.log(`Parsed article: ${article.title}`);
             }
         } catch (error) {
             console.error(`Failed to load ${file}:`, error);
         }
     }
     
+    console.log(`Total articles loaded: ${articles.length}`);
+    
     // 按日期降序排序
-    articles.sort((a, b) => new Date(b.date) - new Date(a.date));
+    console.log('排序前:', articles.map(a => `${a.title}: ${a.date}`));
+    articles.sort((a, b) => {
+        const dateA = new Date(a.date);
+        const dateB = new Date(b.date);
+        console.log(`比较: ${a.title}(${a.date} -> ${dateA}) vs ${b.title}(${b.date} -> ${dateB})`);
+        return dateB - dateA;
+    });
+    console.log('排序后:', articles.map(a => `${a.title}: ${a.date}`));
     
     return articles;
 }
 
 // 解析 markdown frontmatter 和内容
 function parseMarkdown(content) {
+    // 处理不同的换行符
+    content = content.replace(/\r\n/g, '\n');
+    
     const frontmatterRegex = /^---\n([\s\S]*?)\n---\n([\s\S]*)$/;
     const match = content.match(frontmatterRegex);
     
-    if (!match) return null;
+    if (!match) {
+        console.error('Failed to parse frontmatter:', content.substring(0, 100));
+        return null;
+    }
     
     const frontmatter = match[1];
     const body = match[2].trim();
@@ -113,7 +131,6 @@ document.addEventListener('DOMContentLoaded', async function() {
             card.innerHTML = `
                 <div class="card-header">
                     <h3>${article.title}</h3>
-                    <a href="#article-${article.id}" class="article-link">${article.id}</a>
                 </div>
                 <div class="card-content">
                     <p class="small-text">${article.content}</p>
