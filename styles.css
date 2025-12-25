@@ -395,6 +395,10 @@ body {
 .card-content p {
     font-size: 14px;
     color: var(--text-secondary);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .small-text {
@@ -689,6 +693,7 @@ body {
     display: flex;
     align-items: center;
     gap: 6px;
+    line-height: 1;
 }
 
 .article-meta-separator {
@@ -702,18 +707,22 @@ body {
 /* 文章标签样式 */
 .article-tag {
     display: inline-flex;
-    align-items: center;
+    align-items: baseline;
     color: var(--accent-color);
     font-size: 12px;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
     text-decoration: none;
+    gap: 4px;
 }
 
 .article-tag i {
-    margin-right: 4px;
-    font-size: 10px;
+    margin-right: 0;
+    font-size: 12px;
+    vertical-align: middle;
+    display: flex;
+    align-items: center;
 }
 
 .article-tag:hover {
@@ -815,6 +824,10 @@ body {
         padding: 0 100px;
     }
 
+    .header-logo {
+        flex: 1;
+    }
+
     .container {
         padding: 0 100px 12px 100px;
     }
@@ -823,8 +836,14 @@ body {
         padding: 40px 100px;
     }
 
+    .header-nav {
+        display: none;
+    }
+
     .sidebar {
-        width: 240px;
+        display: none;
+    }
+}
     }
 }
 
@@ -833,12 +852,28 @@ body {
         padding: 0 80px;
     }
 
+    .header-logo {
+        flex: 0;
+    }
+
+    .header-right {
+        margin-left: auto;
+    }
+
     .container {
         padding: 0 80px 12px 80px;
     }
 
     .footer {
         padding: 40px 80px;
+    }
+
+    .header-nav {
+        display: none;
+    }
+
+    .sidebar {
+        display: none;
     }
 }
 
