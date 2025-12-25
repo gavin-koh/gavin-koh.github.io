@@ -4,8 +4,82 @@ const headerNav = document.querySelector('.header-nav');
 // 初始状态：隐藏圆角矩形
 headerNav.classList.remove('visible');
 
+// 从 markdown 文件解析文章
+async function loadArticles() {
+    const articleFiles = [
+        './articles/sample/how-to-build-personal-blog/1.md',
+        './articles/sample/2024-reading-summary/2.md',
+        './articles/sample/javascript-async-best-practices/3.md',
+        './articles/sample/photography-gear-recommendations/4.md',
+        './articles/sample/kyoto-three-day-trip/5.md',
+        './articles/sample/time-management-methods/6.md'
+    ];
+    
+    const articles = [];
+    
+    for (const file of articleFiles) {
+        try {
+            const response = await fetch(file);
+            if (!response.ok) {
+                console.error(`Failed to fetch ${file}: ${response.status}`);
+                continue;
+            }
+            const content = await response.text();
+            const article = parseMarkdown(content);
+            if (article) {
+                articles.push(article);
+            }
+        } catch (error) {
+            console.error(`Failed to load ${file}:`, error);
+        }
+    }
+    
+    // 按日期降序排序
+    articles.sort((a, b) => new Date(b.date) - new Date(a.date));
+    
+    return articles;
+}
+
+// 解析 markdown frontmatter 和内容
+function parseMarkdown(content) {
+    const frontmatterRegex = /^---\n([\s\S]*?)\n---\n([\s\S]*)$/;
+    const match = content.match(frontmatterRegex);
+    
+    if (!match) return null;
+    
+    const frontmatter = match[1];
+    const body = match[2].trim();
+    
+    // 解析 frontmatter
+    const article = {};
+    const lines = frontmatter.split('\n');
+    let inTagsArray = false;
+    const tags = [];
+    
+    for (const line of lines) {
+        if (line.startsWith('id:')) {
+            article.id = line.replace('id:', '').trim();
+        } else if (line.startsWith('title:')) {
+            article.title = line.replace('title:', '').trim();
+        } else if (line.startsWith('date:')) {
+            article.date = line.replace('date:', '').trim();
+        } else if (line.startsWith('category:')) {
+            article.category = line.replace('category:', '').trim();
+        } else if (line.startsWith('tags:')) {
+            inTagsArray = true;
+        } else if (inTagsArray && line.startsWith('  - ')) {
+            tags.push(line.replace('  - ', '').trim());
+        }
+    }
+    
+    article.tags = tags;
+    article.content = body;
+    
+    return article;
+}
+
 // 主视图导航栏交互
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
     const navTabsContainer = document.querySelector('.nav-tabs');
     const allTabs = Array.from(navTabsContainer.querySelectorAll('.nav-tab'));
     const nextBtn = document.getElementById('nav-next');
@@ -14,6 +88,55 @@ document.addEventListener('DOMContentLoaded', function() {
     const blogLink = document.querySelector('.header-nav-item');
     
     let isAnimating = false;
+    
+    // 渲染文章到页面
+    function renderArticles(articlesToRender) {
+        const bentoGrid = document.querySelector('.bento-grid');
+        const navCard = bentoGrid.querySelector('.card-nav');
+        
+        // 清空现有文章卡片（保留导航卡片）
+        const existingArticles = bentoGrid.querySelectorAll('.card-medium:not(.card-nav)');
+        existingArticles.forEach(card => card.remove());
+        
+        // 渲染新文章
+        articlesToRender.forEach(article => {
+            const card = document.createElement('div');
+            card.className = 'card card-medium';
+            card.dataset.category = article.category;
+            card.dataset.tags = article.tags.join(',');
+            card.dataset.id = article.id;
+            
+            const tagsHtml = article.tags.map(tag => 
+                `<span class="article-tag"><i class="fas fa-hashtag"></i> ${tag}</span>`
+            ).join('');
+            
+            card.innerHTML = `
+                <div class="card-header">
+                    <h3>${article.title}</h3>
+                    <a href="#article-${article.id}" class="article-link">${article.id}</a>
+                </div>
+                <div class="card-content">
+                    <p class="small-text">${article.content}</p>
+                    <div class="article-meta">
+                        <span>${article.date}</span>
+                        <span class="article-meta-separator">•</span>
+                        <span>${article.category}</span>
+                        ${tagsHtml}
+                    </div>
+                </div>
+            `;
+            
+            bentoGrid.appendChild(card);
+        });
+    }
+    
+    // 加载文章
+    const articles = await loadArticles();
+    console.log('加载的文章数:', articles.length);
+    console.log('文章内容:', articles);
+    
+    // 渲染文章到页面
+    renderArticles(articles);
     
     // 返回首页的函数
     function goHome() {
@@ -151,7 +274,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const articleCards = document.querySelectorAll('.card-medium');
         const totalArticles = articleCards.length;
         
-        // 更新文章总数 - 修复选择器
+        // 更新文章总数
         const siteInfoItems = document.querySelectorAll('.site-info-item');
         siteInfoItems.forEach(item => {
             const labelElement = item.querySelector('.info-label');
@@ -163,15 +286,15 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // 统计标签 - 直接从文章标签中读取
+        // 统计标签
         const tagCounts = {};
         
         // 遍历所有文章，统计标签
         articleCards.forEach(card => {
-            const articleTags = card.querySelectorAll('.article-tag');
-            articleTags.forEach(tagElement => {
-                const tagName = tagElement.textContent.trim(); // 直接获取文本，不需要移除#号
-                tagCounts[tagName] = (tagCounts[tagName] || 0) + 1;
+            const tags = card.dataset.tags.split(',').filter(t => t.trim());
+            tags.forEach(tag => {
+                const trimmedTag = tag.trim();
+                tagCounts[trimmedTag] = (tagCounts[trimmedTag] || 0) + 1;
             });
         });
         
@@ -320,17 +443,10 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             // 根据分类筛选文章
             articleCards.forEach(card => {
-                // 修复选择器 - 查找分类信息（第3个span，即分类）
-                const categoryElement = card.querySelector('.article-meta span:nth-child(3)');
-                if (categoryElement) {
-                    const articleCategory = categoryElement.textContent.trim();
-                    console.log('文章分类:', articleCategory, '筛选分类:', category); // 调试信息
-                    if (articleCategory === category) {
-                        card.style.display = 'flex';
-                        visibleCount++;
-                    } else {
-                        card.style.display = 'none';
-                    }
+                const articleCategory = card.dataset.category;
+                if (articleCategory === category) {
+                    card.style.display = 'flex';
+                    visibleCount++;
                 } else {
                     card.style.display = 'none';
                 }
@@ -347,19 +463,10 @@ document.addEventListener('DOMContentLoaded', function() {
         
         let visibleCount = 0;
         
-        // 直接根据文章中的标签进行筛选
+        // 根据 data-tags 属性进行筛选
         articleCards.forEach(card => {
-            const articleTags = card.querySelectorAll('.article-tag');
-            let hasTag = false;
-            
-            articleTags.forEach(tagElement => {
-                const articleTagName = tagElement.textContent.trim();
-                if (articleTagName === tagName) {
-                    hasTag = true;
-                }
-            });
-            
-            if (hasTag) {
+            const tags = card.dataset.tags.split(',');
+            if (tags.includes(tagName)) {
                 card.style.display = 'flex';
                 visibleCount++;
             } else {

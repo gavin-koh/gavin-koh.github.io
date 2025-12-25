@@ -39,6 +39,8 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    max-width: 1600px;
+    margin: 0 auto;
 }
 
 /* 顶栏容器 */
@@ -422,6 +424,10 @@ html.dark-mode .nav-tabs {
 .card-header {
     margin-bottom: 12px;
     padding-bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
 }
 
 .card-header h2,
@@ -430,10 +436,34 @@ html.dark-mode .nav-tabs {
     font-size: 16px;
     font-weight: 600;
     color: var(--text-primary);
+    flex: 1;
 }
 
 .card-header h2 {
     font-size: 20px;
+}
+
+.article-link {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    border: 1px solid var(--border-color);
+}
+
+.article-link:hover {
+    background-color: var(--accent-color);
+    color: white;
+    border-color: var(--accent-color);
 }
 
 .card-content {
