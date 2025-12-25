@@ -60,14 +60,15 @@ body {
 }
 
 .logo {
-    font-size: 18px;
-    font-weight: 700;
-    letter-spacing: -0.5px;
+    font-size: 16px;
+    font-weight: 600;
+    font-family: 'BBH Bartle', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    letter-spacing: 0.5px;
     transition: all 0.3s ease;
     margin: 0;
     text-decoration: none;
     color: var(--text-primary);
-    padding: 2px 20px;
+    padding: 3px 12px;
     border-radius: 999px;
     display: inline-flex;
     align-items: center;
@@ -325,12 +326,12 @@ html.dark-mode .nav-tabs {
 }
 
 .nav-tab {
-    padding: 3px 12px;
+    padding: 2px 10px;
     font-size: 14px;
     color: var(--text-primary);
     text-decoration: none;
     white-space: nowrap;
-    border-radius: 8px;
+    border-radius: 6px;
     transition: all 0.2s ease;
     flex-shrink: 0;
     font-weight: 500;
@@ -338,31 +339,44 @@ html.dark-mode .nav-tabs {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: var(--bg-tertiary);
+    background-color: transparent;
     outline: none;
 }
 
 .nav-tab:hover {
-    color: var(--accent-color);
-    background-color: rgba(0, 113, 227, 0.1);
+    color: white;
+    background-color: var(--accent-color);
 }
 
 .nav-tab:active {
-    background-color: var(--bg-tertiary);
+    color: white;
+    background-color: var(--accent-color);
+}
+
+/* 移动端触摸优化 */
+@media (hover: none) {
+    .nav-tab {
+        -webkit-tap-highlight-color: transparent;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        user-select: none;
+    }
+    
+    .nav-tab:hover {
+        color: var(--text-primary);
+        background-color: transparent;
+    }
+    
+    .nav-tab:active {
+        color: var(--text-primary);
+        background-color: transparent;
+    }
 }
 
 .nav-tab.active {
     color: white;
     background-color: var(--accent-color);
-    font-weight: 600;
-}
-
-@media (hover: none) {
-    .nav-tab.active {
-        color: var(--text-primary) !important;
-        background-color: var(--bg-tertiary) !important;
-        font-weight: 500 !important;
-    }
+    font-weight: 500;
 }
 
 .nav-pagination {
@@ -372,7 +386,7 @@ html.dark-mode .nav-tabs {
     font-size: 16px;
     cursor: grab;
     padding: 3px 8px;
-    border-radius: 6px;
+    border-radius: 22px;
     transition: all 0.2s ease;
     display: none;
     align-items: center;
@@ -399,7 +413,7 @@ html.dark-mode .nav-tabs {
 .card-medium {
     grid-column: span 1;
     grid-row: span 1;
-    min-height: 140px;
+    min-height: 280px;
 }
 
 .card-small {
@@ -420,10 +434,61 @@ html.dark-mode .nav-tabs {
     min-height: 260px;
 }
 
+/* 占位符卡片 */
+.placeholder-card {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+
 /* 卡片内容 */
+.card-image {
+    position: relative;
+    width: calc(100% + 40px);
+    height: 200px;
+    overflow: hidden;
+    margin: -20px -20px 16px -20px;
+    border-radius: var(--radius) var(--radius) 0 0;
+}
+
+.card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.card:hover .card-image img {
+    transform: scale(1.05);
+}
+
+.card-category-badge {
+    display: inline-block;
+    background-color: transparent;
+    color: var(--text-secondary);
+    padding: 0;
+    border-radius: 0;
+    font-size: 12px;
+    font-weight: 400;
+    margin-bottom: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.card-category-badge.image-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    backdrop-filter: blur(10px);
+    background-color: rgba(10, 132, 255, 0.9);
+    font-size: 14px;
+}
+
 .card-header {
     margin-bottom: 12px;
     padding-bottom: 0;
+    display: flex;
+    flex-direction: column;
 }
 
 .card-header h2,
@@ -436,6 +501,12 @@ html.dark-mode .nav-tabs {
 
 .card-header h2 {
     font-size: 20px;
+}
+
+.article-title {
+    font-size: 20px !important;
+    font-weight: 600 !important;
+    margin: 0;
 }
 
 .card-content {
@@ -474,7 +545,7 @@ html.dark-mode .nav-tabs {
 
 .stat-value {
     font-size: 28px;
-    font-weight: 700;
+    font-weight: 600;
     color: var(--accent-color);
 }
 
@@ -530,6 +601,7 @@ html.dark-mode .nav-tabs {
 
 .card-sidebar {
     min-height: auto;
+    padding: 16px;
 }
 
 .card-profile {
@@ -628,7 +700,7 @@ html.dark-mode .nav-tabs {
 
 .nav-item {
     padding: 10px 12px;
-    border-radius: 8px;
+    border-radius: 22px;
     font-size: 14px;
     color: var(--text-primary);
     text-decoration: none;
@@ -664,7 +736,7 @@ html.dark-mode .nav-tabs {
     justify-content: space-between;
     align-items: center;
     padding: 10px 0;
-    font-size: 13px;
+    font-size: 12px;
     color: var(--text-primary);
     border-bottom: 1px solid var(--border-color);
 }
@@ -674,7 +746,7 @@ html.dark-mode .nav-tabs {
 }
 
 .category-name {
-    font-weight: 500;
+    font-weight: 400;
 }
 
 .category-count {
@@ -697,7 +769,7 @@ html.dark-mode .nav-tabs {
 }
 
 .archive-month {
-    font-weight: 500;
+    font-weight: 400;
 }
 
 .archive-count {
@@ -709,8 +781,9 @@ html.dark-mode .nav-tabs {
 .tag-cloud {
     display: flex;
     flex-wrap: wrap;
-    gap: 4px;
+    gap: 0;
     line-height: 1.6;
+    align-items: flex-start;
 }
 
 .tag-item {
@@ -722,10 +795,10 @@ html.dark-mode .nav-tabs {
     position: relative;
     font-weight: 500;
     font-size: 14px;
-    flex: 0 0 calc(25% - 3px);
     text-align: left;
     padding: 2px 8px;
-    border-radius: 999px;
+    border-radius: 6px;
+    margin: 3px;
 }
 
 .tag-item:hover {
@@ -738,7 +811,7 @@ html.dark-mode .nav-tabs {
 }
 
 .tag-item sup {
-    font-size: 0.7em;
+    font-size: 10px;
     color: var(--text-secondary);
     margin-left: 4px;
     font-weight: 400;
@@ -747,30 +820,35 @@ html.dark-mode .nav-tabs {
 
 /* 文章元信息样式 */
 .article-meta {
-    margin-top: 12px;
-    font-size: 12px;
+    margin-top: 22px;
+    font-size: 13px;
     color: var(--text-secondary);
     display: flex;
     align-items: center;
-    gap: 6px;
+    justify-content: space-between;
     line-height: 1;
+    flex-wrap: wrap;
 }
 
-.article-meta-separator {
-    margin: 0 2px;
+.article-meta-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
 }
 
-.article-meta > span:nth-child(3) {
-    margin-right: 8px;
+.article-meta-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 /* 文章标签样式 */
 .article-tag {
     display: inline-flex;
     align-items: baseline;
-    color: var(--accent-color);
-    font-size: 12px;
-    font-weight: 500;
+    color: var(--text-primary);
+    font-size: 13px;
+    font-weight: 400;
     cursor: pointer;
     transition: all 0.2s ease;
     text-decoration: none;
@@ -780,7 +858,8 @@ html.dark-mode .nav-tabs {
 .article-tag i {
     margin-right: 0;
     font-size: 12px;
-    vertical-align: middle;
+    vertical-align: baseline;
+    color: #c0c0c0;
 }
 
 .article-tag:hover {
@@ -802,7 +881,7 @@ html.dark-mode .nav-tabs {
 
 .info-value {
     color: var(--text-primary);
-    font-weight: 500;
+    font-weight: 400;
 }
 
 .sidebar-text {
@@ -817,9 +896,9 @@ html.dark-mode .nav-tabs {
     background-color: var(--accent-color);
     color: white;
     border: none;
-    border-radius: 8px;
+    border-radius: 22px;
     font-size: 13px;
-    font-weight: 500;
+    font-weight: 400;
     cursor: pointer;
     transition: all 0.2s ease;
 }
@@ -840,7 +919,7 @@ html.dark-mode .nav-tabs {
 
 ::-webkit-scrollbar-thumb {
     background: var(--border-color);
-    border-radius: 4px;
+    border-radius: 22px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -991,6 +1070,12 @@ html.dark-mode .nav-tabs {
 
     .bento-grid {
         grid-template-columns: 1fr;
+        background-color: transparent;
+    }
+
+    .card {
+        padding: 16px;
+        margin-bottom: 0;
     }
 
     .card-large {
@@ -1004,6 +1089,15 @@ html.dark-mode .nav-tabs {
     .card-list {
         grid-column: span 1;
         grid-row: span 1;
+    }
+
+    .card-medium {
+        min-height: auto;
+    }
+
+    .card-image {
+        width: calc(100% + 32px);
+        margin: -16px -16px 12px -16px;
     }
 }
 
@@ -1045,6 +1139,11 @@ html.dark-mode .nav-tabs {
         grid-column: span 1;
         grid-row: span 1;
         min-height: auto;
+    }
+
+    .card-image {
+        width: calc(100% + 32px);
+        margin: -16px -16px 12px -16px;
     }
 }
 
@@ -1180,7 +1279,7 @@ html.dark-mode .nav-tabs {
 .scroll-percent {
     position: absolute;
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 400;
 }
 
 .scroll-to-top:hover .scroll-percent {

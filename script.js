@@ -20,7 +20,10 @@ document.addEventListener('DOMContentLoaded', async function() {
         try {
             const response = await fetch('./posts.json');
             if (!response.ok) throw new Error('无法加载文章列表');
-            const articles = await response.json();
+            let articles = await response.json();
+            
+            // 按日期排序，最新的在前面
+            articles.sort((a, b) => new Date(b.date) - new Date(a.date));
             
             // 渲染文章
             renderArticles(articles);
@@ -41,6 +44,33 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     }
     
+    // 格式化相对时间显示
+    function formatRelativeTime(dateString) {
+        const articleDate = new Date(dateString);
+        const now = new Date();
+        const diff = now - articleDate;
+        
+        const minutes = Math.floor(diff / (1000 * 60));
+        const hours = Math.floor(diff / (1000 * 60 * 60));
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        
+        if (days <= 3) {
+            // 三天内显示相对时间
+            if (minutes < 1) {
+                return '刚刚';
+            } else if (minutes < 60) {
+                return `${minutes} 分钟前`;
+            } else if (hours < 24) {
+                return `${hours} 小时前`;
+            } else {
+                return `${days} 天前`;
+            }
+        } else {
+            // 超过三天显示原始日期
+            return dateString;
+        }
+    }
+
     // 渲染文章到页面
     function renderArticles(articlesToRender) {
         const bentoGrid = document.querySelector('.bento-grid');
@@ -62,17 +92,26 @@ document.addEventListener('DOMContentLoaded', async function() {
                 `<span class="article-tag"><i class="fas fa-hashtag"></i> ${tag}</span>`
             ).join('');
             
+            // 格式化时间显示
+            const formattedDate = formatRelativeTime(article.date);
+            
             card.innerHTML = `
+                <div class="card-image">
+                    <img src="${article.image || 'https://via.placeholder.com/400x200?text=No+Image'}" alt="${article.title}" />
+                </div>
                 <div class="card-header">
-                    <h3>${article.title}</h3>
+                    <div class="card-category-badge">${article.category}</div>
+                    <h3 class="article-title">${article.title}</h3>
                 </div>
                 <div class="card-content">
                     <p class="small-text">${article.content}</p>
                     <div class="article-meta">
-                        <span>${article.date}</span>
-                        <span class="article-meta-separator">•</span>
-                        <span>${article.category}</span>
-                        ${tagsHtml}
+                        <div class="article-meta-left">
+                            ${tagsHtml}
+                        </div>
+                        <div class="article-meta-right">
+                            <span>${formattedDate}</span>
+                        </div>
                     </div>
                 </div>
             `;
@@ -313,14 +352,6 @@ document.addEventListener('DOMContentLoaded', async function() {
                 // 添加当前点击的活跃状态
                 clickedTab.classList.add('active');
                 
-                // 在移动设备上，点击后立即移除焦点和 active 类
-                if (window.innerWidth <= 768) {
-                    clickedTab.blur();
-                    setTimeout(() => {
-                        clickedTab.classList.remove('active');
-                    }, 100);
-                }
-                
                 // 处理标签移动
                 handleTabMovement(clickedTab);
                 
@@ -435,7 +466,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             for (let i = 0; i < placeholderCount; i++) {
                 const placeholder = document.createElement('div');
                 placeholder.className = 'card card-medium placeholder-card';
-                placeholder.style.visibility = 'hidden';
+                placeholder.style.display = 'none';
                 placeholder.style.pointerEvents = 'none';
                 bentoGrid.appendChild(placeholder);
             }
