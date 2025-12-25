@@ -407,8 +407,21 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // 网站最后部署时间（手动设置）
-    const deployTime = new Date('2025-12-24T10:00:00'); // 设置你的部署时间
+    // 网站最后部署时间（从 GitHub 获取）
+    let deployTime = new Date();
+    
+    // 从 GitHub API 获取最近的 commit 时间
+    fetch('https://api.github.com/repos/gavin-koh/gavin-koh.github.io/commits?per_page=1')
+        .then(response => response.json())
+        .then(data => {
+            if (data.length > 0) {
+                deployTime = new Date(data[0].commit.committer.date);
+                updateLastUpdate();
+            }
+        })
+        .catch(error => {
+            console.log('无法获取 GitHub commit 时间，使用本地时间');
+        });
     
     function updateLastUpdate() {
         const now = new Date();
