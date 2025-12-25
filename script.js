@@ -529,6 +529,10 @@ const scrollToBottomBtn = document.getElementById('scroll-to-bottom');
 const themeToggleBtn = document.getElementById('theme-toggle');
 const scrollPercent = document.querySelector('.scroll-percent');
 
+// 初始化时隐藏浮动按钮
+scrollToTopBtn.classList.add('hidden');
+scrollToBottomBtn.classList.add('hidden');
+
 // 深色模式切换
 themeToggleBtn.addEventListener('click', function() {
     document.documentElement.classList.toggle('dark-mode');
@@ -555,7 +559,7 @@ if (savedTheme === 'dark') {
 window.addEventListener('scroll', function() {
     const scrollTop = window.scrollY;
     const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-    const scrolled = (scrollTop / docHeight) * 100;
+    const scrolled = Math.min((scrollTop / docHeight) * 100, 100);
     
     // 更新滚动百分比
     scrollPercent.textContent = Math.round(scrolled);
