@@ -4,98 +4,6 @@ const headerNav = document.querySelector('.header-nav');
 // 初始状态：隐藏圆角矩形
 headerNav.classList.remove('visible');
 
-// 从 markdown 文件解析文章
-async function loadArticles() {
-    const articleFiles = [
-        'sample/1.md',
-        'sample/2.md',
-        'sample/3.md',
-        'sample/4.md',
-        'sample/5.md',
-        'sample/6.md'
-    ];
-    
-    const articles = [];
-    
-    for (const file of articleFiles) {
-        try {
-            console.log(`Fetching: ${file}`);
-            const response = await fetch(file);
-            if (!response.ok) {
-                console.error(`Failed to fetch ${file}: ${response.status}`);
-                continue;
-            }
-            const content = await response.text();
-            console.log(`Loaded ${file}, content length: ${content.length}`);
-            const article = parseMarkdown(content);
-            if (article) {
-                articles.push(article);
-                console.log(`Parsed article: ${article.title}`);
-            }
-        } catch (error) {
-            console.error(`Failed to load ${file}:`, error);
-        }
-    }
-    
-    console.log(`Total articles loaded: ${articles.length}`);
-    
-    // 按日期降序排序
-    console.log('排序前:', articles.map(a => `${a.title}: ${a.date}`));
-    articles.sort((a, b) => {
-        const dateA = new Date(a.date);
-        const dateB = new Date(b.date);
-        console.log(`比较: ${a.title}(${a.date} -> ${dateA}) vs ${b.title}(${b.date} -> ${dateB})`);
-        return dateB - dateA;
-    });
-    console.log('排序后:', articles.map(a => `${a.title}: ${a.date}`));
-    
-    return articles;
-}
-
-// 解析 markdown frontmatter 和内容
-function parseMarkdown(content) {
-    // 处理不同的换行符
-    content = content.replace(/\r\n/g, '\n');
-    
-    const frontmatterRegex = /^---\n([\s\S]*?)\n---\n([\s\S]*)$/;
-    const match = content.match(frontmatterRegex);
-    
-    if (!match) {
-        console.error('Failed to parse frontmatter:', content.substring(0, 100));
-        return null;
-    }
-    
-    const frontmatter = match[1];
-    const body = match[2].trim();
-    
-    // 解析 frontmatter
-    const article = {};
-    const lines = frontmatter.split('\n');
-    let inTagsArray = false;
-    const tags = [];
-    
-    for (const line of lines) {
-        if (line.startsWith('id:')) {
-            article.id = line.replace('id:', '').trim();
-        } else if (line.startsWith('title:')) {
-            article.title = line.replace('title:', '').trim();
-        } else if (line.startsWith('date:')) {
-            article.date = line.replace('date:', '').trim();
-        } else if (line.startsWith('category:')) {
-            article.category = line.replace('category:', '').trim();
-        } else if (line.startsWith('tags:')) {
-            inTagsArray = true;
-        } else if (inTagsArray && line.startsWith('  - ')) {
-            tags.push(line.replace('  - ', '').trim());
-        }
-    }
-    
-    article.tags = tags;
-    article.content = body;
-    
-    return article;
-}
-
 // 主视图导航栏交互
 document.addEventListener('DOMContentLoaded', async function() {
     const navTabsContainer = document.querySelector('.nav-tabs');
@@ -106,6 +14,32 @@ document.addEventListener('DOMContentLoaded', async function() {
     const blogLink = document.querySelector('.header-nav-item');
     
     let isAnimating = false;
+    
+    // 从 posts.json 加载文章数据
+    async function loadArticles() {
+        try {
+            const response = await fetch('./posts.json');
+            if (!response.ok) throw new Error('无法加载文章列表');
+            const articles = await response.json();
+            
+            // 渲染文章
+            renderArticles(articles);
+            
+            // 更新统计信息
+            updateStatistics();
+            
+            // 初始化占位符
+            addPlaceholders(articles.length);
+            
+            // 初始化分类筛选
+            setupCategoryFilter();
+            
+            return articles;
+        } catch (error) {
+            console.error('加载文章失败:', error);
+            return [];
+        }
+    }
     
     // 渲染文章到页面
     function renderArticles(articlesToRender) {
@@ -146,14 +80,6 @@ document.addEventListener('DOMContentLoaded', async function() {
             bentoGrid.appendChild(card);
         });
     }
-    
-    // 加载文章
-    const articles = await loadArticles();
-    console.log('加载的文章数:', articles.length);
-    console.log('文章内容:', articles);
-    
-    // 渲染文章到页面
-    renderArticles(articles);
     
     // 返回首页的函数
     function goHome() {
@@ -584,12 +510,9 @@ document.addEventListener('DOMContentLoaded', async function() {
     // 初始更新时间、建站天数和统计数据
     updateLastUpdate();
     updateSiteDays();
-    updateStatistics();
-    setupCategoryFilter();
     
-    // 初始化占位符（所有文章都显示，所以visibleCount等于总文章数）
-    const initialArticleCount = document.querySelectorAll('.card-medium').length;
-    addPlaceholders(initialArticleCount);
+    // 加载文章数据
+    await loadArticles();
     
     // 每分钟更新一次时间显示
     setInterval(updateLastUpdate, 60000);
