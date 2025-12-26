@@ -956,6 +956,14 @@ html.dark-mode .article-tag:hover i {
 }
 
 /* 响应式设计 */
+@media (min-width: 1201px) {
+    .sidebar {
+        position: sticky;
+        top: 68px;
+        height: calc(100vh - 68px);
+    }
+}
+
 @media (max-width: 1600px) {
     .header-container {
         padding: 0 140px;
