@@ -1083,10 +1083,16 @@ html.dark-mode .article-tag:hover i {
     .header-container {
         padding: 0 24px;
         grid-template-columns: 1fr 1fr;
+        position: fixed;
+        width: 100%;
+        left: 0;
+        right: 0;
+        box-sizing: border-box;
     }
 
     .container {
         padding: 0 24px 12px 24px;
+        margin-top: 68px;
     }
 
     .footer {
@@ -1308,7 +1314,7 @@ html.dark-mode .article-tag:hover i {
 .scroll-percent {
     position: absolute;
     font-size: 14px;
-    font-weight: 400;
+    font-weight: 600;
 }
 
 .scroll-to-top:hover .scroll-percent {
