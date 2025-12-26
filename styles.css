@@ -344,13 +344,18 @@ html.dark-mode .nav-tabs {
 }
 
 .nav-tab:hover {
-    color: white;
-    background-color: var(--accent-color);
+    color: var(--accent-color);
+    background-color: #e3f2fd;
 }
 
 .nav-tab:active {
     color: white;
     background-color: var(--accent-color);
+}
+
+html.dark-mode .nav-tab:hover {
+    color: #90caf9;
+    background-color: #1e3a5f;
 }
 
 /* 移动端触摸优化 */
@@ -377,6 +382,11 @@ html.dark-mode .nav-tabs {
     color: white;
     background-color: var(--accent-color);
     font-weight: 500;
+}
+
+html.dark-mode .nav-tab.active:hover {
+    color: white;
+    background-color: var(--accent-color);
 }
 
 .nav-pagination {
@@ -822,47 +832,66 @@ html.dark-mode .nav-tabs {
 .article-meta {
     margin-top: 22px;
     font-size: 13px;
-    color: var(--text-secondary);
+    color: var(--text-primary);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    line-height: 1;
+    line-height: 1.6;
     flex-wrap: wrap;
+    gap: 0;
 }
 
 .article-meta-left {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 0;
 }
 
 .article-meta-right {
     display: flex;
     align-items: center;
     gap: 8px;
+    margin-right: 6px;
 }
 
 /* 文章标签样式 */
 .article-tag {
-    display: inline-flex;
-    align-items: baseline;
+    display: inline-block;
     color: var(--text-primary);
-    font-size: 13px;
-    font-weight: 400;
+    font-size: 12px;
+    font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
     text-decoration: none;
-    gap: 4px;
+    padding: 2px 6px;
+    border-radius: 6px;
+    margin: 0 4px 0 0;
+    position: relative;
 }
 
 .article-tag i {
-    margin-right: 0;
-    font-size: 12px;
+    margin-right: 2px;
+    font-size: 10px;
     vertical-align: baseline;
-    color: #c0c0c0;
+    color: #d0d0d0;
 }
 
 .article-tag:hover {
+    color: var(--accent-color);
+    background-color: #e3f2fd;
+}
+
+.article-tag:hover i {
+    color: var(--accent-color);
+}
+
+html.dark-mode .article-tag:hover {
+    color: #90caf9;
+    background-color: #1e3a5f;
+}
+
+html.dark-mode .article-tag:hover i {
+    color: #90caf9;
 }
 
 /* 网站信息样式 */
